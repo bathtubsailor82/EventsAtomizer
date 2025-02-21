@@ -1,0 +1,174 @@
+**OBJECTIF DU PROJET**
+Application de gestion de services audio/vidéo qui servira de backend pour d'autres applications.
+
+**STRUCTURE PRINCIPALE**
+- Focus sur les Services plutôt que les Events
+- UI à 3 colonnes pour la vue Services :
+  1. Filtres (gauche)
+  2. Liste de services avec quick actions (milieu)
+  3. Vue détaillée avec système de visualisation des changements par champs... (à imaginer) et historique général du service changelog (droite)
+
+**ARCHITECTURE DES DONNÉES**
+```
+📁 Models/
+├── 📁 Core/
+│   ├── Event.swift
+│   └── Option.swift
+├── 📁 Services/
+│   ├── ServiceType.swift           // Enum des types de services
+│   ├── Service.swift              // Protocol/classe de base pour tous les services
+│   ├── AudioVideoRecording.swift   // Service complet avec données XML+locales
+│   └── OnlinePlatform.swift        // Service complet avec données XML+locales
+└── 📁 DataManagement/
+    ├── XMLParser.swift            // Gestion du parsing XML
+    └── ModelContainer.swift        // Configuration SwiftData
+```
+
+**FONCTIONNALITÉS CLÉS**
+1. Import XML
+   - Parse complet des données
+   - Pas de stockage des données brutes XML
+   - Focus initial sur AudioVideoRecording
+
+2. Gestion des changements
+   - Suivi avec @Tracking wrapper de propritété
+   - Purge automatique et manuelle des événements trop vieux (15 jours)
+   - Visualisation granulaire des changements
+
+3. Quick Actions
+   - Modification rapide du webLink et status dans la liste
+   - Minimum de clics pour les actions courantes
+
+4. UI Optimisée
+   - Liste filtrable efficace
+   - Indicateurs visuels de changements
+   - Actions rapides accessibles
+
+**PRÉPARATION FUTURE**
+1. API REST
+   - Endpoints pour recherche de services
+   - Mise à jour des statuts
+   - Format JSON standardisé
+
+2. Interopérabilité
+   - Connexion avec l'app audio future
+   - Mode "LINK" dans l'app audio
+   - Communication via API REST
+
+**PRIORITÉS D'IMPLÉMENTATION**
+1. Structure de données de base (ServiceType.swift)
+2. Modèle AudioVideoRecording
+3. Système de @tracking pour les champs et historique par champs
+4. Système de changelog par service
+4. Parser XML optimisé
+5. Interface utilisateur
+6. API REST (phase ultérieure)
+
+**TECHNOLOGIES**
+- SwiftUI pour l'interface
+- SwiftData pour la persistence
+- Données en mémoire pour le développement
+- Vapor prévu pour l'API REST future
+
+Cette structure permet :
+- Une gestion efficace des services
+- Une visualisation claire des changements
+- Une base solide pour l'API future
+- Une maintenance facilitée
+- Une évolution simple vers d'autres types de services
+
+
+
+📁 Models/
+└── 📁 Service/
+    ├── ServiceType.swift                 // Enum des types de services
+    ├── 📁 XMLData/
+    │   ├── ServiceXMLParser.swift        // Parser XML
+    │   └── AudioVideoXMLData.swift       // Structure données parsées
+    ├── 📁 LocalData/
+    │   ├── AudioVideoLocalData.swift     // Données locales (webLink, status...)
+    └── Service.swift                     // Modèle principal
+    
+    
+📁 Views/
+├── 📁 MainViews/
+│   ├── MainThreeColumnView.swift         // Vue principale conteneur
+│   ├── ServicesSidebarView.swift         // Colonne filtres (gauche)
+│   ├── ServicesListView.swift            // Liste services (milieu)
+│   └── ServiceDetailView.swift           // Détails (droite)
+│
+├── 📁 Components/
+│   ├── ServiceRowView.swift              // Ligne dans la liste
+│   ├── QuickActionView.swift             // Actions rapides (webLink, status)
+│   └── SeviceChangelogView.swift         // Historique versions
+│
+└── 📁 Shared/
+    ├── FilterView.swift                  // Composants de filtrage
+    └── Badges.swift                      // Badges statut/changements
+
+
+Service
+├── Données XML parsées (AudioVideoXMLData)
+│   ├── Propriétés (languages, isAudioOnly...)
+│
+└── Données Locales (AudioVideoLocalData)
+    ├── webLink
+    ├── processingStatus
+    └── notes
+
+
+📁 API/
+├── 📁 Endpoints/
+│   ├── ServiceController.swift
+│   └── Routes.swift
+├── 📁 Models/
+│   └── APIModels.swift                   // Versions API des modèles
+└── 📁 Services/
+    └── ServiceRepository.swift           // Couche d'accès aux données
+
+
+
+Notes de détail :
+Tracking de l'historique des champs :
+
+@propertyWrapper
+struct Tracked<Value> {
+    private var value: Value
+    private(set) var history: [Value] = []
+
+    var wrappedValue: Value {
+        get { value }
+        set {
+            history.append(value)
+            value = newValue
+        }
+    }
+
+    var projectedValue: [Value] {
+        return history
+    }
+
+    init(wrappedValue: Value) {
+        self.value = wrappedValue
+    }
+}
+
+struct ContentView: View {
+    @Tracked var score = 0
+    
+    var body: some View {
+        VStack {
+            Text("Score: \(score)")
+            Button("Increase") {
+                score += 1
+            }
+            Button("Show History") {
+                print($score) // Prints the history of score changes
+            }
+        }
+    }
+}
+
+
+
+'
