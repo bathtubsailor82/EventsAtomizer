@@ -47,10 +47,10 @@ struct EventsAtomizerApp: App {
 @MainActor
 func wipeAllData(in container: ModelContainer) async throws {
     // Supprimer tous les services d'abord (à cause des relations)
-    try await container.mainContext.delete(model: ServiceModel.self)
-    try await container.mainContext.delete(model: AudioVideoRecordingDetails.self)
-    try await container.mainContext.delete(model: OnlinePlatformDetails.self)
-    try await container.mainContext.delete(model: Event.self)
-    try await container.mainContext.delete(model: Option.self)
-    try await container.mainContext.delete(model: Venue.self)
+    try container.mainContext.delete(model: ServiceModel.self)
+    try container.mainContext.delete(model: AudioVideoRecordingDetails.self)
+    try container.mainContext.delete(model: OnlinePlatformDetails.self)
+    try container.mainContext.delete(model: Event.self)
+    try container.mainContext.delete(model: Option.self)
+    try container.mainContext.delete(model: Venue.self)
 }

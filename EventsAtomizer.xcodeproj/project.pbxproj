@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7BF4443E2D916C88005C40A5 /* CoreXLSX in Frameworks */ = {isa = PBXBuildFile; productRef = 7BF4443D2D916C88005C40A5 /* CoreXLSX */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		7B2CD7782D43CCEA007E0EB5 /* EventsAtomizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventsAtomizer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7BF4443E2D916C88005C40A5 /* CoreXLSX in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = EventsAtomizer;
 			packageProductDependencies = (
+				7BF4443D2D916C88005C40A5 /* CoreXLSX */,
 			);
 			productName = EventsAtomizer;
 			productReference = 7B2CD7782D43CCEA007E0EB5 /* EventsAtomizer.app */;
@@ -95,6 +101,7 @@
 			mainGroup = 7B2CD76F2D43CCEA007E0EB5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				7BF4443C2D916C88005C40A5 /* XCRemoteSwiftPackageReference "CoreXLSX" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7B2CD7792D43CCEA007E0EB5 /* Products */;
@@ -259,6 +266,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "EventS Atomizer";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -287,6 +296,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "EventS Atomizer";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -323,6 +334,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		7BF4443C2D916C88005C40A5 /* XCRemoteSwiftPackageReference "CoreXLSX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CoreOffice/CoreXLSX";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7BF4443D2D916C88005C40A5 /* CoreXLSX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7BF4443C2D916C88005C40A5 /* XCRemoteSwiftPackageReference "CoreXLSX" */;
+			productName = CoreXLSX;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7B2CD7702D43CCEA007E0EB5 /* Project object */;
 }
