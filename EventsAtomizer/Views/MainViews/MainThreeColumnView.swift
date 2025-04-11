@@ -396,35 +396,36 @@ struct ServiceBadgeData: Identifiable {
 struct AudioVideoDetailView: View {
     let details: AudioVideoRecordingDetails
     let service: ServiceModel
-    @State private var showCommandEditor = false
+    @State private var showCommandEditor = true
     @State private var command: String = ""
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             GroupBox("Delivery Options") {
-                Text(command)
-                    .font(.system(.body, design: .monospaced))
-                    .textSelection(.enabled)
-                
-                HStack {
-                    Button("Copier Commande") {
-                        NSPasteboard.general.clearContents()
-                        NSPasteboard.general.setString(command, forType: .string)
-                    }
-                    .buttonStyle(.bordered)
-                    
-                    Spacer()
-                    
-                    Button(showCommandEditor ? "Fermer l'éditeur" : "Personnaliser la commande") {
-                        showCommandEditor.toggle()
-                    }
-                    .buttonStyle(.bordered)
-                }
-                
-                if showCommandEditor {
-                    CommandEditorView(service: service)
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                }
+//                Text(command)
+//                    .font(.system(.body, design: .monospaced))
+//                    .textSelection(.enabled)
+//                
+//                HStack {
+//                    Button("Copier Commande") {
+//                        NSPasteboard.general.clearContents()
+//                        NSPasteboard.general.setString(command, forType: .string)
+//                    }
+//                    .buttonStyle(.bordered)
+//                    
+//                    Spacer()
+//                    
+////                    Button(showCommandEditor ? "Fermer l'éditeur" : "Personnaliser la commande") {
+////                        showCommandEditor.toggle()
+////                    }
+////                    .buttonStyle(.bordered)
+//               }
+                CommandEditorView(service: service)
+//
+//                if showCommandEditor {
+//                    CommandEditorView(service: service)
+//                        .transition(.move(edge: .top).combined(with: .opacity))
+//                }
             }
             .onAppear {
                 command = service.audioVideoDetails?.generateDeliveryCommand() ?? ""
