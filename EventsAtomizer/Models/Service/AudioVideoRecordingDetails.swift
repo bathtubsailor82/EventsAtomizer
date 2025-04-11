@@ -84,9 +84,8 @@ final class AudioVideoRecordingDetails {
     }
     
     
-    func generateDeliveryCommand() -> String {
+    func generateDeliveryCommand(preferences: CommandPreferences? = nil) -> String {
         var command = "-c" // implicite ./ultimate-converter#.sh (version supportée 3+)
-        
         
         // Room
         if let room = service?.venue?.getRecordingRoomCode() {
@@ -98,35 +97,43 @@ final class AudioVideoRecordingDetails {
             command += " -date \(event.formattedDateForRecording())"
         }
         
-        // Taille minimale (optionnel, vous pouvez ajuster)
-        command += " -size 43M -sort time"
+        // Taille minimale - configurable
+        if preferences?.useSizeArg ?? true {
+            command += " -size \(preferences?.sizeValue ?? "43M")"
+        }
         
-        // Les langues de base qui doivent toujours être présentes
-        let baseLanguages = Set([
-            Language.original.isoCode,  // "or"
-            Language.english.isoCode,   // "en"
-            Language.french.isoCode     // "fr"
-        ])
+        // Sort - optionnel
+        if preferences?.useSortArg ?? false {
+            command += " -sort \(preferences?.sortValue ?? "time")"
+        }
         
-        // Ajouter les langues audio spécifiques qui ne sont pas déjà dans les langues de base
-        var allLanguages = baseLanguages
-        allLanguages.formUnion(audioOnlyLanguagesISO)
+        // Langues - optionnel
+        if preferences?.useLangArg ?? false {
+            // Les langues de base qui doivent toujours être présentes
+            let baseLanguages = Set([
+                Language.original.isoCode,  // "or"
+                Language.english.isoCode,   // "en"
+                Language.french.isoCode     // "fr"
+            ])
+            
+            // Ajouter les langues audio spécifiques qui ne sont pas déjà dans les langues de base
+            var allLanguages = baseLanguages
+            allLanguages.formUnion(audioOnlyLanguagesISO)
+            
+            // Ajouter à la commande (toujours trier pour avoir un ordre cohérent)
+            let languagesStr = allLanguages.sorted().joined(separator: ",")
+            command += " -lang \(languagesStr)"
+        }
         
-        // Ajouter à la commande (toujours trier pour avoir un ordre cohérent)
-        let languagesStr = allLanguages.sorted().joined(separator: ",")
-        command += " -lang \(languagesStr)"
-        
-        // Ajouter des paramètres dynamiques
-        if let event = self.service?.event {
+        // Event info - configurable
+        if preferences?.useCustomEvent ?? false && !(preferences?.customEventValue.isEmpty ?? true) {
+            command += " -event \"\(preferences?.customEventValue ?? "")\""
+        } else if let event = self.service?.event {
             command += " -event \"\(event.id) \(event.name)\""
         }
         
-        
-        
-        
         return command
     }
-    
 }
 
 // Extension pour la configuration audio/vidéo

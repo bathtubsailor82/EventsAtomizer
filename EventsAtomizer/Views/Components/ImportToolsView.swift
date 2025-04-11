@@ -193,6 +193,8 @@ struct ImportToolsView: View {
         importStats = nil
         
         do {
+            print("🔄 Début importation XML")
+            
             let xmlData: Data
             
             // Déterminer la source et obtenir le XML
@@ -204,8 +206,10 @@ struct ImportToolsView: View {
                 xmlData = try Data(contentsOf: url)
             }
             
+            print("📤 Fichier lu, taille: \(xmlData.count) octets")
+            
             // Choisir le parser approprié
-            let entries: [ParsedEntry] // Au lieu de ServiceEntry
+            var entries: [ParsedEntry]
             if url.pathExtension.lowercased() == "xlsx" {
                 let excelSheetParser = ExcelSheetParser()
                 entries = excelSheetParser.parse(xmlData: xmlData)
@@ -214,19 +218,44 @@ struct ImportToolsView: View {
                 entries = xmlParser.parse(xmlData: xmlData)
             }
             
-            // Traitement commun des entrées
-            var stats = ImportStats()
+            print("🔍 Parsing terminé, \(entries.count) entrées trouvées")
+            
+            // Déduplication simple: garder seulement la première occurrence de chaque serviceId
+            var uniqueServiceIds = Set<String>()
+            var uniqueEntries: [ParsedEntry] = []
+            
             for entry in entries {
-                let (event, option, service) = entry.toSwiftDataModels(context: modelContext)
-                modelContext.insert(event)
-                modelContext.insert(option)
-                modelContext.insert(service)
-                stats.addService(service.serviceType)
+                if !uniqueServiceIds.contains(entry.serviceId) {
+                    uniqueServiceIds.insert(entry.serviceId)
+                    uniqueEntries.append(entry)
+                } else {
+                    print("⚠️ Entrée ignorée (serviceId dupliqué): \(entry.serviceId)")
+                }
+            }
+            
+            print("🧹 Après déduplication: \(entries.count) entrées originales -> \(uniqueEntries.count) entrées uniques")
+            
+            // Traiter les entrées dédupliquées
+            var stats = ImportStats()
+            
+            for entry in uniqueEntries {
+                do {
+                    let (event, option, service) = entry.toSwiftDataModels(context: modelContext)
+                    modelContext.insert(event)
+                    modelContext.insert(option)
+                    modelContext.insert(service)
+                    stats.addService(service.serviceType)
+                    stats.events += 1
+                    stats.options += 1
+                } catch {
+                    print("❌ Erreur lors du traitement de l'entrée \(entry.readableId): \(error)")
+                }
             }
             
             try modelContext.save()
             importStats = stats
             showImportSuccess = true
+            print("🎉 Importation terminée avec succès: \(stats.totalServices) services importés")
             
         } catch {
             print("Erreur détaillée:", error)

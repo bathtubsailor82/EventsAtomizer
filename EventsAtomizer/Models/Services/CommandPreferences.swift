@@ -1,3 +1,11 @@
+//
+//  CommandPreferences.swift
+//  EventsAtomizer
+//
+//  Created by localadmin on 11/04/2025.
+//
+
+
 // CommandPreferences.swift
 import Foundation
 import SwiftData

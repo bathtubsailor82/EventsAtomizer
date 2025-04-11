@@ -10,6 +10,7 @@ import SwiftData
 
 @main
 struct EventsAtomizerApp: App {
+    // Dans EventsAtomizerApp.swift
     let sharedModelContainer: ModelContainer = {
         // Définir le schéma
         let schema = Schema([
@@ -18,11 +19,16 @@ struct EventsAtomizerApp: App {
             OnlinePlatformDetails.self,
             Event.self,
             Option.self,
-            Venue.self
+            Venue.self,
+            CommandPreferences.self
         ])
         
-        // Configuration en mémoire pour le développement
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+        // Configuration pour macOS 14.x
+        // Utiliser uniquement les paramètres disponibles
+        let modelConfiguration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: true  // Garde seulement les paramètres existants
+        )
 
         do {
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])

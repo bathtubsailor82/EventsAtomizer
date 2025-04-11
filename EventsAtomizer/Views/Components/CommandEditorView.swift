@@ -1,3 +1,12 @@
+//
+//  CommandEditorView.swift
+//  EventsAtomizer
+//
+//  Created by localadmin on 11/04/2025.
+//
+
+import SwiftUI
+
 struct CommandEditorView: View {
     let service: ServiceModel
     @State private var preferences = CommandPreferences()

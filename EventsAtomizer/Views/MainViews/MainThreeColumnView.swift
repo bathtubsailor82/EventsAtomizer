@@ -396,6 +396,7 @@ struct ServiceBadgeData: Identifiable {
 struct AudioVideoDetailView: View {
     let details: AudioVideoRecordingDetails
     let service: ServiceModel
+    @State private var showCommandEditor = false
     @State private var command: String = ""
     
     var body: some View {
@@ -405,11 +406,25 @@ struct AudioVideoDetailView: View {
                     .font(.system(.body, design: .monospaced))
                     .textSelection(.enabled)
                 
-                Button("Copier Commande") {
-                    NSPasteboard.general.clearContents()
-                    NSPasteboard.general.setString(command, forType: .string)
+                HStack {
+                    Button("Copier Commande") {
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(command, forType: .string)
+                    }
+                    .buttonStyle(.bordered)
+                    
+                    Spacer()
+                    
+                    Button(showCommandEditor ? "Fermer l'éditeur" : "Personnaliser la commande") {
+                        showCommandEditor.toggle()
+                    }
+                    .buttonStyle(.bordered)
                 }
-                .buttonStyle(.bordered)
+                
+                if showCommandEditor {
+                    CommandEditorView(service: service)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
             }
             .onAppear {
                 command = service.audioVideoDetails?.generateDeliveryCommand() ?? ""
